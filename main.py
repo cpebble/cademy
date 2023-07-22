@@ -40,7 +40,7 @@ def parse_collected(games):
         for p in g['players']:
             c[p[0]] += p[1]
     return {
-                "totals": list(sorted(c.items(), key=lambda e: e[1]))#, key=lambda pl: c[pl]))
+                "totals": list(sorted(c.items(), reverse=True, key=lambda e: e[1]))#, key=lambda pl: c[pl]))
             }
 
 @cli.command()
