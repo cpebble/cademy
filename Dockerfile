@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 ENV HOSTNAME="0.0.0.0"
 ENV PORT="5000"
 
-CMD python main.py --host $HOST --port $PORT
+CMD python main.py server-command --host $HOST --port $PORT
