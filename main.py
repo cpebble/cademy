@@ -33,6 +33,24 @@ def parse_game(game: str):
 def cli():
     pass
 
+def to_base14(num):
+    # Define the symbols to represent digits from 10 to 13
+    symbols = {10: 'A', 11: 'B', 12: 'C', 13: 'D'}
+    
+    # Start with an empty result
+    result = ''
+
+    while num > 0:
+        digit = num % 14
+        if 10 <= digit <= 13:
+            # Replace 10-13 with A-D
+            result = symbols[digit] + result
+        else:
+            # Prepend the digit to the result
+            result = str(digit) + result
+        # Integer division by 14
+        num = num // 14
+    return result
 
 def parse_collected(games):
     c = Counter()
@@ -40,7 +58,7 @@ def parse_collected(games):
         for p in g['players']:
             c[p[0]] += p[1]
     return {
-                "totals": list(sorted(c.items(), reverse=True, key=lambda e: e[1]))#, key=lambda pl: c[pl]))
+                "totals": [ (c, to_base14(v)) for (c, v) in list(sorted(c.items(), reverse=True, key=lambda e: e[1]))]
             }
 
 @cli.command()
