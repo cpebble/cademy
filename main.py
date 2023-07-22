@@ -68,7 +68,7 @@ def parse_collected(games):
     c = Counter()
     for g in games:
         for p in g['players']:
-            c[p[0]] += int(p[1], 14)
+            c[p[0].replace("[DNF] ", "")] += int(p[1], 14)
     return {
                 "totals": [ (c, to_base14(v)) for (c, v) in list(sorted(c.items(), reverse=True, key=lambda e: e[1]))]
             }
