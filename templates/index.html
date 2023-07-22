@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Games</title>
+</head>
+<body>
+    <h1>Games List</h1>
+    {% for game in games %}
+        <div class="game-div">
+        <h3 class="game-head"> {{ game }}</h3>
+        <p class="players-head">Players:</p>
+        {% for p, s in games[game]['players'] %}
+            <span class="playerrep">{{p}}: {{s}}</span>
+        {% endfor %}
+        </div>
+    {% endfor %}
+    <h1>Total Leaderboard</h1>
+    <ul>
+    {% for p, c in collected['totals'] %}
+    <li><b>{{p}}: </b>{{ c }}</li>
+        {%endfor%}
+    </ul>
+
+<style>
+.game-head{ 
+    margin-bottom: 5px;
+}
+.playerrep {
+    display: block;
+}
+.players-head{
+    margin: 5px;
+    }
+</style>
+</body>
+</html>
