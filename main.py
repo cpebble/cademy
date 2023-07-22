@@ -15,11 +15,18 @@ def fetch_game(game: str):
     if r.status_code != 200:
         raise Exception(f"Error in request: {str(r.text)}")
     d = r.json()
+    for p in d['player_stats']:
+        if p["dnf"]:
+            p["username"] = f"[DNF] {p['username']}"
     return d
 
 
 def parse_game(game: str):
+    def is_dnf(p, k):
+        return p
+
     data = fetch_game(game)
+    pprint(data)
     return {
             "players": 
             list(map(
