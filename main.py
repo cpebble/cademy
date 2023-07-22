@@ -4,7 +4,7 @@ from collections import Counter
 import json
 from pprint import pprint
 import time
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import threading
 import os
 app = Flask(__name__)
@@ -22,7 +22,12 @@ def parse_game(game: str):
     data = fetch_game(game)
     return {
             "players": 
-                    [(p['username'], p['total_sips']) for p in data['player_stats']],
+            list(map(
+                lambda c: (c[0], to_base14(int(c[1]))), 
+                sorted(
+                    [(p['username'], p['total_sips']) for p in data['player_stats']], 
+                    reverse=True, 
+                    key=lambda c: c[1]))),
             "chugs":[(data['players'][i % len(data['players'])]['username'], c) 
                      for i, c in enumerate(data['cards']) 
                      if c['chug_duration_ms'] != None
@@ -56,7 +61,7 @@ def parse_collected(games):
     c = Counter()
     for g in games:
         for p in g['players']:
-            c[p[0]] += p[1]
+            c[p[0]] += int(p[1], 14)
     return {
                 "totals": [ (c, to_base14(v)) for (c, v) in list(sorted(c.items(), reverse=True, key=lambda e: e[1]))]
             }
@@ -71,12 +76,13 @@ def parse_collected(games):
 #@click.argument('games')
 def server_command(hostname, port, tail, fetch_time):
     games_list = [g.strip() for g in os.getenv("GAMES", "").split(',')]
+    app.config["WATCHED"] = games_list
     game_data = [parse_game(g) for g in games_list]
     threading.Thread(target=app.run, kwargs={'host':hostname, 'port':port}).start()
 
     while tail:
         try:
-            game_data = {g: parse_game(g) for g in games_list}
+            game_data = {g: parse_game(g) for g in app.config["WATCHED"]}
             app.config['GAMES'] = game_data
             app.config['COLL'] = parse_collected(game_data.values())
         except Exception as ex:
@@ -103,6 +109,12 @@ def process(games):
     if games:  
         return [game.strip() for game in games.split(',')]
     return []
+
+@app.route('/config', methods=['POST'])
+def config():
+    games = request.form.get('games', '')
+    app.config['WATCHED'] = [g.strip() for g in games.split(',')]
+    return {'status': 'success'}, 200
 
 @app.route('/')
 def home():

@@ -4,38 +4,79 @@
     <title>Games</title>
 </head>
 <body>
+    <div>
     <h1>Games List</h1>
     {% for game in games %}
         <div class="game-div">
-        <h3 class="game-head"> {{ game }}</h3>
-        <p class="players-head">Players:</p>
-        {% for p, s in games[game]['players'] %}
-            <span class="playerrep">{{p}}: {{s}}</span>
-        {% endfor %}
+            <h3 class="game-head"> Game id: {{ game }}</h3>
+            <p class="players-head">Players:</p>
+            <div class="players-list">
+                {% for p, s in games[game]['players'] %}
+                <span class="playername">{{p}}:</span><span class="playerscore"> {{s}}</span>
+                {% endfor %}
+            </div>
         </div>
     {% endfor %}
+
+    </div>
+    <div class="leaderboard-wrapper">
     <h1>Total Leaderboard</h1>
-    <ul>
+    <div class="total-board players-list">
     {% for p, c in collected['totals'] %}
-    <li><b>{{p}}: </b>{{ c }}</li>
+    <b class="board-name">{{p}}: </b><span class="board-score">{{ c }}</span>
         {%endfor%}
-    </ul>
+    </div>
+    </div>
 
 <style>
-.game-head{ 
-    margin-bottom: 5px;
+.total-board > b {
+    margin: 0.2em 0;
 }
-.playerrep {
+
+.leaderboard-wrapper {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 1em;
+}
+
+.players-list {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+
+.game-div {
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 2em 1em;
+    padding: 10px;
+    
+}
+.game-head{ 
+    margin: 5px;
+    background: #dddddd;
+    display: block;
+    margin: -10px -10px 5px -10px;
+    padding: 1em 0.5em 0.75em 0.75em;
+}
+.player {
     display: block;
 }
 .players-head{
-    margin: 5px;
-    }
+    margin: 0.5em 0;
+    font-weight: bold;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
 </style>
 <script>
-window.setTimeout(()=>{
-window.location.reload()
-}, 10000)
+//window.setTimeout(()=>{
+//window.location.reload()
+//}, 10000)
 </script>
 </body>
 </html>
